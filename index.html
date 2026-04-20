@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daviron | Obsidian</title>
+    
+    <!-- Icone -->
+     <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        /* PROTEÇÃO MÁXIMA CONTRA TEMA CLARO */
+        html, body {
+            background-color: #000000 !important;
+            color: #d4d4d8 !important; /* Zinc 300 */
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Syne', sans-serif;
+        }
+
+        /* Scrollbar escura invisível */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
+        /* Lógica das Abas */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estilos de Cartão Obsidian (Garantindo cores escuras direto no CSS) */
+        .obsidian-card {
+            background-color: #09090b !important; /* Zinc 950 */
+            border: 1px solid #18181b !important; /* Zinc 900 */
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .obsidian-card:hover {
+            border-color: #3f3f46 !important; /* Zinc 700 */
+            background-color: #0a0a0c !important;
+            transform: translateY(-2px);
+        }
+
+        /* Inputs e Textareas Obsidian */
+        .obsidian-input {
+            background-color: #050505 !important;
+            border: 1px solid #18181b !important;
+            color: #ffffff !important;
+            border-radius: 8px;
+            padding: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .obsidian-input:focus {
+            border-color: #71717a !important;
+            background-color: #09090b !important;
+        }
+        .obsidian-input::placeholder {
+            color: #52525b !important;
+        }
+
+        /* Botões */
+        .btn-obsidian {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-obsidian:hover {
+            background-color: #d4d4d8 !important;
+        }
+
+        .btn-outline-obsidian {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border: 1px solid #3f3f46 !important;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-outline-obsidian:hover {
+            background-color: #18181b !important;
+            border-color: #ffffff !important;
+        }
+
+        /* Navigation Links */
+        .nav-link {
+            color: #71717a !important; /* Zinc 500 */
+            transition: color 0.2s ease;
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.875rem; /* 14px */
+        }
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+        .nav-link.active {
+            color: #ffffff !important;
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #ffffff;
+        }
+
+        /* Efeito sutil de luz de fundo */
+        .obsidian-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60vw;
+            height: 40vh;
+            background: radial-gradient(ellipse at top, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <div class="obsidian-glow"></div>
+
+    <!-- Header Obsidian -->
+    <header class="sticky top-0 z-40 border-b" style="background-color: rgba(0,0,0,0.8); backdrop-filter: blur(12px); border-color: #18181b;">
+        <div class="container mx-auto px-6 h-20 flex justify-between items-center relative z-10">
+            
+            <!-- Logo -->
+            <div class="flex items-center cursor-pointer" onclick="switchTab('home')">
+                <span class="font-display font-bold text-2xl tracking-tighter text-white">DAVIRON</span>
+                <span class="ml-2 text-xs font-mono px-2 py-0.5 rounded" style="background-color: #18181b; color: #a1a1aa;">AGÊNCIA</span>
+            </div>
+            
+            <!-- Navegação Visível -->
+            <nav class="hidden md:flex space-x-10 items-center font-medium">
+                <button onclick="switchTab('home')" class="nav-link active" data-target="home">Agência</button>
+                <button onclick="switchTab('work')" class="nav-link" data-target="work">Projetos</button>
+                <button onclick="switchTab('store')" class="nav-link" data-target="store">Equipamentos</button>
+                <button onclick="switchTab('articles')" class="nav-link" data-target="articles">Artigos</button>
+                <button onclick="switchTab('contact')" class="nav-link" data-target="contact">Contato</button>
+            </nav>
+
+            <div class="flex items-center space-x-6">
+                <!-- Botão do Carrinho -->
+                <button id="cart-toggle" class="flex items-center gap-2 text-sm font-medium transition-colors hover:text-white bg-transparent border-none cursor-pointer" style="color: #a1a1aa;">
+                    <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Cesta</span>
+                    <span id="cart-count" class="text-black text-xs px-1.5 py-0.5 rounded font-bold hidden" style="background-color: #ffffff;">0</span>
+                </button>
+                
+                <!-- Menu Mobile -->
+                <button class="md:hidden text-white bg-transparent border-none cursor-pointer" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i data-feather="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden w-full border-b" style="background-color: #09090b; border-color: #18181b;">
+            <div class="flex flex-col p-6 space-y-4 text-sm font-medium">
+                <button onclick="switchTab('home'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left text-white hover:text-gray-400 bg-transparent border-none cursor-pointer">Agência</button>
+                <button onclick="switchTab('work'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left text-white hover:text-gray-400 bg-transparent border-none cursor-pointer">Projetos</button>
+                <button onclick="switchTab('store'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left text-white hover:text-gray-400 bg-transparent border-none cursor-pointer">Equipamentos</button>
+                <button onclick="switchTab('articles'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left text-white hover:text-gray-400 bg-transparent border-none cursor-pointer">Artigos</button>
+                <button onclick="switchTab('contact'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left text-white hover:text-gray-400 bg-transparent border-none cursor-pointer">Contato</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Área Principal -->
+    <main class="flex-grow relative z-10 pb-20">
+        
+        <!-- ================= AGÊNCIA (HOME) ================= -->
+        <section id="home" class="tab-content active">
+            <div class="container mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="max-w-2xl">
+                    <h1 class="font-display text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.05] tracking-tight">
+                        Engenharia obscura.<br>
+                        Resultados brilhantes.
+                    </h1>
+                    
+                    <p class="text-lg mb-10 max-w-xl font-light leading-relaxed" style="color: #a1a1aa;">
+                        A Daviron é um estúdio de desenvolvimento focado na arquitetura front-end de alta precisão. Entregamos plataformas velozes, seguras e com um design inesquecível.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="switchTab('work')" class="btn-obsidian px-8 py-4 text-sm">
+                            Explorar Portfólio
+                        </button>
+                        <button onclick="switchTab('contact')" class="btn-outline-obsidian px-8 py-4 text-sm border-none cursor-pointer">
+                            Iniciar um Projeto
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex w-1/3 justify-end">
+                    <div class="w-64 h-64 rounded-full" style="background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%); border: 1px solid #18181b;"></div>
+                </div>
+            </div>
+
+            <!-- Serviços -->
+            <div class="container mx-auto px-6 pb-20 border-t pt-20" style="border-color: #18181b;">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="obsidian-card p-10">
+                        <i data-feather="layers" class="w-6 h-6 text-white mb-8"></i>
+                        <h3 class="font-display text-xl text-white mb-3 font-semibold">Design & Interfaces</h3>
+                        <p class="text-sm leading-relaxed" style="color: #a1a1aa;">
+                            Construção de websites institucionais e landing pages com foco total na conversão e na excelência visual.
+                        </p>
+                    </div>
+                    <div class="obsidian-card p-10">
+                        <i data-feather="code" class="w-6 h-6 text-white mb-8"></i>
+                        <h3 class="font-display text-xl text-white mb-3 font-semibold">Sistemas Complexos</h3>
+                        <p class="text-sm leading-relaxed" style="color: #a1a1aa;">
+                            Aplicações web escaláveis (SPA), painéis administrativos e integração com APIs externas.
+                        </p>
+                    </div>
+                    <div class="obsidian-card p-10">
+                        <i data-feather="shield" class="w-6 h-6 text-white mb-8"></i>
+                        <h3 class="font-display text-xl text-white mb-3 font-semibold">Manutenção Ativa</h3>
+                        <p class="text-sm leading-relaxed" style="color: #a1a1aa;">
+                            Monitoramento, correção de bugs, atualizações de segurança e melhoria contínua da performance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PROJETOS (WORK) ================= -->
+        <section id="work" class="tab-content">
+            <div class="container mx-auto px-6 py-20">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b pb-8" style="border-color: #18181b;">
+                    <div>
+                        <h2 class="font-display text-4xl text-white font-bold mb-2">Projetos Executados</h2>
+                        <p style="color: #a1a1aa;">O nosso histórico de desenvolvimento no front-end.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Project 1 -->
+                    <a href="https://daviisidoro.github.io/portfolio" target="_blank" rel="noopener noreferrer" class="obsidian-card flex flex-col group h-[300px] cursor-pointer" style="text-decoration: none;">
+                        <div class="h-1/2 flex items-center justify-center border-b relative overflow-hidden" style="border-color: #18181b; background-color: #050505;">
+                            <i data-feather="user" class="w-10 h-10 transition-colors duration-300" style="color: #3f3f46;"></i>
+                        </div>
+                        <div class="h-1/2 p-8 flex flex-col justify-center">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-display text-2xl text-white font-semibold">Portfólio Pessoal</h3>
+                                <i data-feather="arrow-up-right" class="w-5 h-5 transition-colors" style="color: #71717a;"></i>
+                            </div>
+                            <p class="text-sm font-mono" style="color: #71717a;">daviisidoro.github.io/portfolio</p>
+                        </div>
+                    </a>
+
+                    <!-- Project 2 -->
+                    <a href="https://daviisidoro.github.io/LabuKids" target="_blank" rel="noopener noreferrer" class="obsidian-card flex flex-col group h-[300px] cursor-pointer" style="text-decoration: none;">
+                        <div class="h-1/2 flex items-center justify-center border-b relative overflow-hidden" style="border-color: #18181b; background-color: #050505;">
+                            <i data-feather="shopping-bag" class="w-10 h-10 transition-colors duration-300" style="color: #3f3f46;"></i>
+                        </div>
+                        <div class="h-1/2 p-8 flex flex-col justify-center">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-display text-2xl text-white font-semibold">Loja LabuKids</h3>
+                                <i data-feather="arrow-up-right" class="w-5 h-5 transition-colors" style="color: #71717a;"></i>
+                            </div>
+                            <p class="text-sm font-mono" style="color: #71717a;">daviisidoro.github.io/LabuKids</p>
+                        </div>
+                    </a>
+
+                    <!-- Project 3 -->
+                    <a href="https://daviisidoro.github.io/faroeste" target="_blank" rel="noopener noreferrer" class="obsidian-card flex flex-col group h-[300px] cursor-pointer" style="text-decoration: none;">
+                        <div class="h-1/2 flex items-center justify-center border-b relative overflow-hidden" style="border-color: #18181b; background-color: #050505;">
+                            <i data-feather="crosshair" class="w-10 h-10 transition-colors duration-300" style="color: #3f3f46;"></i>
+                        </div>
+                        <div class="h-1/2 p-8 flex flex-col justify-center">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-display text-2xl text-white font-semibold">Site Faroeste</h3>
+                                <i data-feather="arrow-up-right" class="w-5 h-5 transition-colors" style="color: #71717a;"></i>
+                            </div>
+                            <p class="text-sm font-mono" style="color: #71717a;">daviisidoro.github.io/faroeste</p>
+                        </div>
+                    </a>
+
+                    <!-- Project 4 -->
+                    <a href="https://daviisidoro.github.io/aurafarm" target="_blank" rel="noopener noreferrer" class="obsidian-card flex flex-col group h-[300px] cursor-pointer" style="text-decoration: none;">
+                        <div class="h-1/2 flex items-center justify-center border-b relative overflow-hidden" style="border-color: #18181b; background-color: #050505;">
+                            <i data-feather="play" class="w-10 h-10 transition-colors duration-300" style="color: #3f3f46;"></i>
+                        </div>
+                        <div class="h-1/2 p-8 flex flex-col justify-center">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-display text-2xl text-white font-semibold">AuraFarm (Game)</h3>
+                                <i data-feather="arrow-up-right" class="w-5 h-5 transition-colors" style="color: #71717a;"></i>
+                            </div>
+                            <p class="text-sm font-mono" style="color: #71717a;">daviisidoro.github.io/aurafarm</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= EQUIPAMENTOS (STORE) ================= -->
+        <section id="store" class="tab-content">
+            <div class="container mx-auto px-6 py-20">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b pb-8" style="border-color: #18181b;">
+                    <div>
+                        <h2 class="font-display text-4xl text-white font-bold mb-2">Loja de Equipamentos</h2>
+                        <p style="color: #a1a1aa;">Hardware rigorosamente selecionado para engenheiros e designers.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="products-grid">
+                    <!-- JS injeta os produtos aqui -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ARTIGOS ================= -->
+        <section id="articles" class="tab-content">
+            <div class="container mx-auto px-6 py-20 max-w-4xl">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b pb-8" style="border-color: #18181b;">
+                    <div>
+                        <h2 class="font-display text-4xl text-white font-bold mb-2">Artigos e Estudos</h2>
+                        <p style="color: #a1a1aa;">A nossa base de conhecimento sobre tecnologia web. Clique para ler.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4" id="articles-list">
+                    <!-- JS injeta os artigos aqui. Eles chamarão openArticleModal() -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CONTATO ================= -->
+        <section id="contact" class="tab-content">
+            <div class="container mx-auto px-6 py-20 max-w-5xl">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b pb-8" style="border-color: #18181b;">
+                    <div>
+                        <h2 class="font-display text-4xl text-white font-bold mb-2">Contato</h2>
+                        <p style="color: #a1a1aa;">Pronto para iniciar um projeto ou necessita de consultoria? Fale conosco.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Informações de Contato -->
+                    <div class="flex flex-col space-y-8">
+                        <div class="obsidian-card p-8">
+                            <i data-feather="mail" class="w-6 h-6 text-white mb-4"></i>
+                            <h4 class="font-display text-xl text-white font-semibold mb-2">E-mail Direto</h4>
+                            <p style="color: #a1a1aa;" class="text-sm mb-4">A nossa equipe responde em até 24 horas úteis.</p>
+                            <a href="mailto:daviisidoroprofissional@gmail.com" class="text-white hover:underline">contato@daviron.dev</a>
+                        </div>
+                        
+                        <div class="obsidian-card p-8">
+                            <i data-feather="map-pin" class="w-6 h-6 text-white mb-4"></i>
+                            <h4 class="font-display text-xl text-white font-semibold mb-2">Base de Operações</h4>
+                            <p style="color: #a1a1aa;" class="text-sm">São Paulo, SP - Brasil<br>Atendemos clientes globalmente.</p>
+                        </div>
+                    </div>
+
+                    <!-- Formulário -->
+                    <div class="obsidian-card p-8 lg:p-10">
+                        <form id="contact-form" onsubmit="submitContact(event)" class="flex flex-col space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-white mb-2">Nome Completo</label>
+                                <input type="text" id="name" required class="obsidian-input" placeholder="Seu nome">
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-white mb-2">E-mail Profissional</label>
+                                <input type="email" id="email" required class="obsidian-input" placeholder="seu@email.com">
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-white mb-2">Mensagem</label>
+                                <textarea id="message" rows="4" required class="obsidian-input" placeholder="Como podemos ajudar o seu negócio?"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-obsidian w-full py-4 text-sm mt-4 cursor-pointer border-none">
+                                Enviar Mensagem
+                            </button>
+                            
+                            <div id="contact-success" class="hidden text-center text-sm mt-4 p-4 rounded-lg border" style="background-color: rgba(255,255,255,0.05); border-color: #3f3f46; color: #ffffff;">
+                                Mensagem enviada com sucesso. Retornaremos em breve.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t pt-12 pb-8 mt-auto" style="border-color: #18181b; background-color: #050505;">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <div class="font-display text-xl font-bold text-white tracking-tighter">DAVIRON.</div>
+                
+                <div class="flex gap-6 text-sm font-medium" style="color: #a1a1aa;">
+                    <button onclick="switchTab('work')" class="hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">Portfólio</button>
+                    <button onclick="switchTab('store')" class="hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">Equipamentos</button>
+                    <button onclick="switchTab('contact')" class="hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">Contato</button>
+                </div>
+            </div>
+            
+            <div class="border-t pt-6 flex flex-col md:flex-row justify-between items-center text-sm" style="border-color: #18181b; color: #71717a;">
+                <span>© 2026 Daviron Studio. Todos os direitos reservados.</span>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors"><i data-feather="github" class="w-4 h-4"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i data-feather="linkedin" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= MODAL DE LEITURA DO ARTIGO ================= -->
+    <div id="article-modal" class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300" style="background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
+        <!-- Backdrop para fechar ao clicar fora -->
+        <div class="absolute inset-0 cursor-pointer" onclick="closeArticleModal()"></div>
+        
+        <div class="relative w-full max-w-3xl mx-auto mt-20 md:mt-32 max-h-[80vh] flex flex-col rounded-xl overflow-hidden shadow-2xl" style="background-color: #09090b; border: 1px solid #18181b;">
+            <div class="p-6 border-b flex justify-between items-center bg-black/50" style="border-color: #18181b;">
+                <span id="modal-article-date" class="text-xs font-mono uppercase px-2 py-1 rounded" style="background-color: #18181b; color: #71717a;"></span>
+                <button onclick="closeArticleModal()" class="p-2 rounded-full transition-colors hover:text-white cursor-pointer border-none" style="color: #71717a; background-color: #18181b;">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-8 md:p-12 overflow-y-auto">
+                <h2 id="modal-article-title" class="font-display text-3xl md:text-4xl text-white font-bold mb-6 leading-tight"></h2>
+                <div id="modal-article-content" class="text-base leading-relaxed space-y-6" style="color: #a1a1aa;">
+                    <!-- Conteúdo injetado via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL DO CARRINHO ================= -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300" style="background-color: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
+        <div class="absolute right-0 top-0 h-full w-full max-w-md border-l transform translate-x-full transition-transform duration-300 flex flex-col" id="cart-drawer" style="background-color: #09090b; border-color: #18181b;">
+            
+            <div class="p-8 border-b flex justify-between items-center" style="border-color: #18181b;">
+                <h3 class="font-display text-2xl font-bold text-white">Carrinho</h3>
+                <button id="close-cart" class="p-2 rounded-full transition-colors hover:text-white cursor-pointer border-none" style="color: #71717a; background-color: #18181b;">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="flex-grow overflow-y-auto p-8" id="cart-items">
+                <div class="h-full flex flex-col items-center justify-center" id="empty-cart-msg" style="color: #71717a;">
+                    <i data-feather="shopping-cart" class="w-10 h-10 mb-4 opacity-30"></i>
+                    <p class="text-sm">O carrinho está vazio.</p>
+                </div>
+            </div>
+
+            <div class="p-8 border-t" style="border-color: #18181b; background-color: #000000;">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-sm" style="color: #a1a1aa;">Total</span>
+                    <span id="cart-total" class="font-display text-3xl text-white font-bold">R$ 0,00</span>
+                </div>
+                <button onclick="checkoutWhatsApp()" class="w-full btn-obsidian py-4 text-sm uppercase tracking-wide border-none">
+                    Finalizar no WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        feather.replace();
+
+        // --- Navegação ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            setTimeout(() => {
+                document.getElementById(tabId).classList.add('active');
+            }, 50);
+            
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                if(btn.dataset.target === tabId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Contato Submit Simples ---
+        function submitContact(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const successMsg = document.getElementById('contact-success');
+            
+            btn.textContent = "Aguarde...";
+            btn.style.opacity = "0.7";
+            
+            // Simulação de envio
+            setTimeout(() => {
+                btn.style.display = "none";
+                successMsg.classList.remove('hidden');
+                e.target.reset(); // Limpa o form
+            }, 1000);
+        }
+
+        // --- Dados da Loja ---
+        const products = [
+            { id: 1, name: "Teclado Keychron Q1 Pro", price: 180.00, tag: "Periféricos", desc: "Corpo em alumínio CNC e teclas macias. Focado na precisão e conforto." },
+            { id: 2, name: "Mouse Logitech MX Master 3S", price: 150.00, tag: "Acessórios", desc: "Sensor ultrarrápido que funciona até sobre vidro. Silencioso." },
+            { id: 3, name: "Monitor Dell UltraSharp 27\"", price: 1200.00, tag: "Monitores", desc: "Painel 4K para máxima nitidez de código e design." },
+            { id: 4, name: "Headset Sony WH-1000XM5", price: 199.00, tag: "Áudio", desc: "Isolamento ativo de som para manter o foco total no trabalho." },
+            { id: 5, name: "Cadeira Herman Miller Aeron", price: 500.00, tag: "Móveis", desc: "A referência mundial em ergonomia e suporte lombar." },
+            { id: 6, name: "SSD NVMe 2TB Gen 4", price: 400.00, tag: "Armazenamento", desc: "Leitura de 7.000 MB/s para carregamento instantâneo de projetos." },
+            { id: 7, name: "Dock Station CalDigit TS4", price: 200.00, tag: "Conectividade", desc: "Centralize todas as suas conexões num único hub Thunderbolt." },
+            { id: 8, name: "Microfone Shure MV7", price: 170.00, tag: "Áudio", desc: "Clareza de podcasting para as suas reuniões diárias com o cliente." }
+        ];
+
+        // --- Dados dos Artigos com Conteúdo Completo ---
+        const articles = [
+            { 
+                id: "001", 
+                date: "Abril 2026", 
+                title: "O poder do modo escuro na tecnologia", 
+                desc: "Como o Dark Mode passou de uma tendência passageira para o padrão ouro em interfaces de tecnologia e bem-estar visual.",
+                content: `<p>Durante muitos anos, o fundo branco foi o padrão inquestionável da web. No entanto, com a evolução dos monitores OLED e a preocupação crescente com a fadiga visual, o "Dark Mode" ou Modo Escuro tornou-se uma exigência em qualquer aplicação moderna.</p>
+                <p>Na Daviron, acreditamos que interfaces escuras não são apenas uma escolha estética. Elas reduzem o cansaço ocular de desenvolvedores e utilizadores que passam horas em frente ao ecrã, e economizam ativamente a bateria em dispositivos móveis modernos.</p>
+                <p>A chave para um bom design escuro não é apenas inverter as cores. É a criação de uma hierarquia visual através de tons de cinzento escuro (como a nossa identidade Obsidian Black), uso cuidadoso de contrastes e redução do brilho branco absoluto, garantindo uma leitura confortável em ambientes com pouca luz.</p>`
+            },
+            { 
+                id: "002", 
+                date: "Março 2026", 
+                title: "Otimização de Core Web Vitals na prática", 
+                desc: "Dicas essenciais para melhorar a pontuação do seu site no Google, reduzir o abandono e atrair mais tráfego orgânico.",
+                content: `<p>A velocidade de carregamento de um site não é apenas um luxo, é um fator crucial de rankeamento nos motores de busca e a linha que divide uma conversão bem-sucedida de um abandono imediato.</p>
+                <p>O Google utiliza as métricas "Core Web Vitals" para medir a experiência do utilizador. As três principais são:</p>
+                <ul>
+                    <li><b>LCP (Largest Contentful Paint):</b> Mede a velocidade de carregamento percebida. Marcar o conteúdo principal em menos de 2.5 segundos é vital.</li>
+                    <li><b>FID (First Input Delay):</b> Mede a interatividade. O site deve reagir instantaneamente quando o utilizador clica em algo.</li>
+                    <li><b>CLS (Cumulative Layout Shift):</b> Mede a estabilidade visual. Elementos que saltam pelo ecrã enquanto a página carrega frustram o utilizador e destroem a pontuação.</li>
+                </ul>
+                <p>Para otimizar estas métricas, a nossa equipa foca-se em entregar HTML limpo, adiar a execução de JavaScript não essencial e garantir que todas as imagens possuem dimensões pré-definidas no código.</p>`
+            },
+            { 
+                id: "003", 
+                date: "Fevereiro 2026", 
+                title: "Arquitetura Front-End: Escalabilidade sem dor", 
+                desc: "Padrões de design de código para evitar a refatoração constante em sistemas complexos e plataformas em crescimento.",
+                content: `<p>Um dos maiores desafios na construção de plataformas robustas é garantir que a base de código (codebase) cresça de forma saudável à medida que novas funcionalidades são adicionadas.</p>
+                <p>Sem uma arquitetura sólida, um projeto Front-end rapidamente se transforma no chamado "código esparguete", onde uma pequena alteração num componente pode quebrar partes aparentemente não relacionadas do sistema.</p>
+                <p>Nós utilizamos arquiteturas baseadas em componentes desacoplados, gestão de estado imutável e tipagem estrita (como TypeScript). Isto garante que a comunicação entre as diferentes partes da aplicação seja previsível. Se um sistema é desenhado de forma isolada, testá-lo e atualizá-lo torna-se numa tarefa cirúrgica e segura, evitando horas de depuração e custos desnecessários para os nossos clientes.</p>`
+            }
+        ];
+
+        // --- Renderizar Produtos ---
+        const productsGrid = document.getElementById('products-grid');
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'obsidian-card p-8 flex flex-col group';
+            card.innerHTML = `
+                <div class="text-xs mb-4 font-mono uppercase tracking-widest" style="color: #71717a;">${product.tag}</div>
+                <h3 class="font-display text-xl text-white font-bold mb-3 leading-tight">${product.name}</h3>
+                <p class="text-sm mb-8 flex-grow leading-relaxed" style="color: #a1a1aa;">${product.desc}</p>
+                
+                <div class="flex justify-between items-center pt-6 border-t" style="border-color: #18181b;">
+                    <span class="text-lg font-bold text-white">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                    <button onclick="addToCart(${product.id})" class="p-2 rounded-lg transition-colors hover:bg-white hover:text-black border-none cursor-pointer" style="border: 1px solid #3f3f46; color: #d4d4d8; background: transparent;">
+                        <i data-feather="plus" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            productsGrid.appendChild(card);
+        });
+
+        // --- Renderizar Artigos (Agora clicáveis e funcionais) ---
+        const articlesList = document.getElementById('articles-list');
+        articles.forEach(article => {
+            const row = document.createElement('div');
+            // Alterado para <div> com cursor-pointer e onclick passando o ID do artigo
+            row.className = 'obsidian-card p-8 block group cursor-pointer';
+            row.onclick = () => openArticleModal(article.id);
+            row.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 mb-4">
+                    <h3 class="font-display text-2xl text-white font-bold transition-colors group-hover:text-gray-400">${article.title}</h3>
+                    <span class="text-xs font-mono uppercase px-2 py-1 rounded" style="background-color: #18181b; color: #71717a;">${article.date}</span>
+                </div>
+                <p class="text-sm leading-relaxed max-w-3xl" style="color: #a1a1aa;">${article.desc}</p>
+                <div class="mt-4 text-xs font-bold text-white uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">Ler artigo completo -></div>
+            `;
+            articlesList.appendChild(row);
+        });
+
+        // --- Lógica do Modal de Leitura do Artigo ---
+        const articleModal = document.getElementById('article-modal');
+        const modalTitle = document.getElementById('modal-article-title');
+        const modalDate = document.getElementById('modal-article-date');
+        const modalContent = document.getElementById('modal-article-content');
+
+        function openArticleModal(id) {
+            const article = articles.find(a => a.id === id);
+            if(article) {
+                modalTitle.textContent = article.title;
+                modalDate.textContent = article.date;
+                modalContent.innerHTML = article.content;
+                
+                articleModal.classList.remove('hidden');
+                setTimeout(() => {
+                    articleModal.classList.remove('opacity-0');
+                }, 10);
+                
+                // Previne scroll do corpo da página ao ler o artigo
+                document.body.style.overflow = 'hidden'; 
+            }
+        }
+
+        function closeArticleModal() {
+            articleModal.classList.add('opacity-0');
+            setTimeout(() => {
+                articleModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Devolve o scroll
+            }, 300);
+        }
+
+
+        // --- Lógica do Carrinho ---
+        let cart = [];
+        const cartModal = document.getElementById('cart-modal');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartToggleBtn = document.getElementById('cart-toggle');
+        const closeCartBtn = document.getElementById('close-cart');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const emptyCartMsg = document.getElementById('empty-cart-msg');
+        const cartTotalEl = document.getElementById('cart-total');
+        const cartCountEl = document.getElementById('cart-count');
+
+        function openCart() {
+            cartModal.classList.remove('hidden');
+            setTimeout(() => {
+                cartModal.classList.remove('opacity-0');
+                cartDrawer.classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        function closeCart() {
+            cartModal.classList.add('opacity-0');
+            cartDrawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                cartModal.classList.add('hidden');
+            }, 300);
+        }
+
+        cartToggleBtn.addEventListener('click', openCart);
+        closeCartBtn.addEventListener('click', closeCart);
+        cartModal.addEventListener('click', (e) => {
+            if (e.target === cartModal) closeCart();
+        });
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                cartCountEl.textContent = totalItems;
+                cartCountEl.classList.remove('hidden');
+            } else {
+                cartCountEl.classList.add('hidden');
+            }
+
+            cartItemsContainer.innerHTML = '';
+            let totalValue = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.appendChild(emptyCartMsg);
+                emptyCartMsg.style.display = 'flex';
+            } else {
+                emptyCartMsg.style.display = 'none';
+                cart.forEach(item => {
+                    totalValue += item.price * item.quantity;
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'p-4 mb-4 rounded-lg border';
+                    itemEl.style.backgroundColor = '#050505';
+                    itemEl.style.borderColor = '#18181b';
+                    itemEl.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-sm font-bold text-white pr-4">${item.name}</h4>
+                            <button onclick="removeFromCart(${item.id})" class="transition-colors hover:text-white bg-transparent border-none cursor-pointer" style="color: #71717a;">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-white font-medium">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-7 h-7 flex justify-center items-center rounded border transition-colors hover:bg-white hover:text-black cursor-pointer" style="border-color: #3f3f46; color: #a1a1aa; background: #0a0a0c;">-</button>
+                                <span class="text-white text-sm w-4 text-center font-medium">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-7 h-7 flex justify-center items-center rounded border transition-colors hover:bg-white hover:text-black cursor-pointer" style="border-color: #3f3f46; color: #a1a1aa; background: #0a0a0c;">+</button>
+                            </div>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemEl);
+                });
+                feather.replace();
+            }
+
+            cartTotalEl.textContent = `R$ ${totalValue.toFixed(2).replace('.', ',')}`;
+        }
+
+        // --- Finalização WhatsApp ---
+        function checkoutWhatsApp() {
+            if (cart.length === 0) return;
+
+            const phoneNumber = "5511972802904"; 
+            
+            let message = "Olá, Daviron. Gostaria de prosseguir com a aquisição dos seguintes equipamentos:\n\n";
+            let total = 0;
+
+            cart.forEach(item => {
+                message += `• ${item.quantity}x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
+                total += item.price * item.quantity;
+            });
+
+            message += `\n*Total estimado:* R$ ${total.toFixed(2).replace('.', ',')}\n\nAguardando instruções.`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+        
+    </script>
+</body>
+</html>
